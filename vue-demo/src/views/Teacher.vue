@@ -6,7 +6,7 @@
         <el-button type="primary">导入</el-button>
         <el-button type="primary">导出</el-button>
 
-        <el-dialog v-model="dialogVisible" title="新增" width="30%">
+        <el-dialog v-model="dialogVisible" title="提示" width="30%">
           <el-form label-width="120px" :model="form" :rules="rules" ref="form">
             <el-form-item label="用户名" prop="teacherName">
               <el-input v-model="form.teacherName" style="width: 80%;" maxlength="18" clearable></el-input>
@@ -90,6 +90,12 @@ export default {
     }
   },
   created() {
+    // TODO: 待完善
+    // 非管理员无权访问
+    if (this.$store.getters.adminSelection !== 2) {
+      this.$router.back();
+      return;
+    }
     this.handleLoad();
   },
   methods: {

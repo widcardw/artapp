@@ -6,7 +6,7 @@
         <el-button type="primary">导入</el-button>
         <el-button type="primary">导出</el-button>
 
-        <el-dialog v-model="dialogVisible" title="新增" width="30%">
+        <el-dialog v-model="dialogVisible" title="提示" width="30%">
           <el-form label-width="120px" :model="form" :rules="rules" ref="form">
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username" style="width: 80%;" maxlength="18" clearable></el-input>
@@ -49,7 +49,7 @@
     </el-table>
     <el-pagination
         v-model:currentPage="currentPage"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[5, 10, 20, 50, 100]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"

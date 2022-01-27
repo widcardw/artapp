@@ -26,3 +26,4 @@
 
 - 以上 TODO 完成
 - 创建 github 仓库，能够在云端维护
+- 学习 MyBatis 等

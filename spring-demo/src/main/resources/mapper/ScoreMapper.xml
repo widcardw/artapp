@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springdemo.mapper.ScoreMapper">
+
+    <resultMap id="ScoreResultMap" type="com.example.springdemo.entity.ScoreVO">
+        <result column="stu_id" property="stuId"/>
+        <result column="username" property="stuName"/>
+        <result column="nick_name" property="stuNickName"/>
+        <result column="password" property="stuPassword"/>
+
+        <result column="course_id" property="courseId"/>
+        <result column="course_no" property="courseNo"/>
+        <result column="course_name" property="courseName"/>
+
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="getAllScore" resultMap="ScoreResultMap">
+        select sc.stu_id,
+               s.username,
+               s.nick_name,
+               s.password,
+               sc.course_id,
+               c.course_no,
+               c.course_name,
+               sc.score
+        from sc
+                 left outer join student s on s.id = sc.stu_id
+                 left outer join course c on c.id = sc.course_id
+            limit #{pageNum}
+           , #{pageSize}
+    </select>
+
+    <select id="getScoreByStuIdAndCourseId" resultMap="ScoreResultMap">
+        select sc.stu_id,
+               s.username,
+               s.nick_name,
+               s.password,
+               sc.course_id,
+               c.course_no,
+               c.course_name,
+               sc.score
+        from sc
+                 left outer join student s on s.id = sc.stu_id
+                 left outer join course c on c.id = sc.course_id
+        where s.id = #{stuId}
+          and c.id = #{courseId}
+    </select>
+
+    <select id="findPageByStuId" resultMap="ScoreResultMap">
+        select sc.stu_id,
+               s.username,
+               s.nick_name,
+               s.password,
+               sc.course_id,
+               c.course_no,
+               c.course_name,
+               sc.score
+        from sc
+                 left outer join student s on s.id = sc.stu_id
+                 left outer join course c on c.id = sc.course_id
+        where s.id = #{stuId} limit #{pageNum}
+            , #{pageSize}
+    </select>
+
+    <select id="findPageByStuName" resultMap="ScoreResultMap">
+        select sc.stu_id,
+               s.username,
+               s.nick_name,
+               s.password,
+               sc.course_id,
+               c.course_no,
+               c.course_name,
+               sc.score
+        from sc
+                 left outer join student s on s.id = sc.stu_id
+                 left outer join course c on c.id = sc.course_id
+        where s.username = #{stuName} limit #{pageNum}
+            , #{pageSize}
+    </select>
+
+    <select id="findPageByCourseId" resultMap="ScoreResultMap">
+        select sc.stu_id,
+               s.username,
+               s.nick_name,
+               s.password,
+               sc.course_id,
+               c.course_no,
+               c.course_name,
+               sc.score
+        from sc
+                 left outer join student s on s.id = sc.stu_id
+                 left outer join course c on c.id = sc.course_id
+        where c.id = #{courseId} limit #{pageNum}
+            , #{pageSize}
+    </select>
+
+    <select id="findPageByCourseNo" resultMap="ScoreResultMap">
+        select sc.stu_id,
+               s.username,
+               s.nick_name,
+               s.password,
+               sc.course_id,
+               c.course_no,
+               c.course_name,
+               sc.score
+        from sc
+                 left outer join student s on s.id = sc.stu_id
+                 left outer join course c on c.id = sc.course_id
+        where c.course_no = #{courseNo} limit #{pageNum}
+            , #{pageSize}
+    </select>
+
+    <select id="findPageByCourseName" resultMap="ScoreResultMap">
+        select sc.stu_id,
+               s.username,
+               s.nick_name,
+               s.password,
+               sc.course_id,
+               c.course_no,
+               c.course_name,
+               sc.score
+        from sc
+                 left outer join student s on s.id = sc.stu_id
+                 left outer join course c on c.id = sc.course_id
+        where c.course_name like #{courseName} limit #{pageNum}
+            , #{pageSize}
+    </select>
+
+    <select id="countAll" resultType="Long">
+        select count(1)
+        from sc
+    </select>
+
+    <select id="countByStuId" resultType="Long">
+        select count(1)
+        from sc
+        where stu_id = #{stuId}
+    </select>
+
+    <select id="countByStuName" resultType="Long">
+        select count(1)
+        from sc
+                 left outer join student on student.id = sc.stu_id
+        where student.username = #{stuName}
+    </select>
+
+    <select id="countByCourseId" resultType="Long">
+        select count(1)
+        from sc
+        where course_id = #{courseId}
+    </select>
+
+    <select id="countByCourseNo" resultType="Long">
+        select count(1)
+        from sc
+                 left outer join course on course.id = sc.course_id
+        where course.course_no = #{courseNo}
+    </select>
+
+    <select id="countByCourseName" resultType="Long">
+        select count(1)
+        from sc
+                 left outer join course on course.id = sc.course_id
+        where course.course_name like #{courseName}
+    </select>
+
+    <insert id="insert" parameterType="com.example.springdemo.entity.Score">
+        insert into sc(stu_id, course_id, score)
+        values (#{stuId}, #{courseId}, #{score})
+    </insert>
+
+    <update id="update" parameterType="com.example.springdemo.entity.Score">
+        update sc
+        set score=#{score}
+        where stu_id = #{stuId}
+          and course_id = #{courseId}
+    </update>
+
+    <delete id="delete">
+        delete
+        from sc
+        where stu_id = #{stuId}
+          and course_id = #{courseId}
+    </delete>
+</mapper>

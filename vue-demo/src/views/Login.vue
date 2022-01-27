@@ -34,7 +34,7 @@ import md5 from "crypto-js/md5";
 export default {
   name: "Login",
   created() {
-    // this.getWallPaper();
+    this.getWallPaper();
   },
   data() {
     return {
@@ -60,7 +60,9 @@ export default {
   methods: {
     submitForm() {
       console.log(this.adminSelection)
-      this.encodePassword();
+      if (this.form.password && this.form.password.length !== 32) {
+        this.encodePassword();
+      }
       if (this.adminSelection === '1') {
         console.log("teacher")
         this.teacherLogin();
