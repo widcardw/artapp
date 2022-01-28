@@ -19,7 +19,7 @@
           <el-input v-model="form.password" style="width:80%" type="password" show-password></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm">登录</el-button>
+          <el-button type="primary" @click="submitForm" :disabled="isLogging">登录</el-button>
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
@@ -40,6 +40,7 @@ export default {
     return {
       imgSrc: "",
       adminSelection: '1',
+      isLogging: false,
       form: {},
       rules: {
         adminSelection: [{
@@ -59,6 +60,7 @@ export default {
   },
   methods: {
     submitForm() {
+      this.isLogging = true;
       console.log(this.adminSelection)
       if (this.form.password && this.form.password.length !== 32) {
         this.encodePassword();
@@ -76,7 +78,8 @@ export default {
     },
     teacherLogin() {
       request.post("/api/teacher/login", this.form).then(res => {
-        console.log(res)
+        console.log(res);
+        this.isLogging = false;
         if (res.code === "0") {
           this.$message({type: "success", message: "登陆成功"});
           this.$store.dispatch("Login", {
@@ -91,7 +94,8 @@ export default {
     },
     adminLogin() {
       request.post("/api/admin/login", this.form).then(res => {
-        console.log(res)
+        console.log(res);
+        this.isLogging = false;
         if (res.code === "0") {
           this.$message({type: "success", message: "登陆成功"});
           this.$store.dispatch("Login", {

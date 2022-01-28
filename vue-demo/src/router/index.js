@@ -35,9 +35,14 @@ const routes = [
                 component: () => import("@/views/Teacher")
             },
             {
-                path: "info",
+                path: "/info",
                 name: "Information",
                 component: () => import("@/views/Information")
+            },
+            {
+                path: "/exercises",
+                name: "Exercises",
+                component: () => import("@/views/Exercises")
             }
         ]
     },

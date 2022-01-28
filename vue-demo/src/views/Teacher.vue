@@ -29,36 +29,42 @@
 
       </div>
       <div style="display: flex;">
-        <el-input v-model="searchContent" clearable placeholder="输入关键字搜索" style="min-width: 300px;" :prefix-icon="Search"/>
+        <el-input v-model="searchContent" clearable placeholder="输入关键字搜索" style="min-width: 300px;"
+                  :prefix-icon="Search"/>
         <el-button type="primary" style="margin-left: 5px;" @click="handleLoad">查询</el-button>
       </div>
     </div>
-    <el-table :data="tableData" border style="width: 99%">
-      <el-table-column prop="id" label="ID" sortable/>
-      <el-table-column prop="teacherName" label="教师名" sortable/>
-      <el-table-column prop="nickName" label="昵称"/>
-      <el-table-column fixed="right" label="操作">
-        <template #default="scope">
-          <el-button plain size="small" @click="handleEdit(scope.row)">编辑
-          </el-button>
-          <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row.id)">
-            <template #reference>
-              <el-button type="danger" size="small">删除</el-button>
-            </template>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-        v-model:currentPage="currentPage"
-        :page-sizes="[5, 10, 20, 50]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-    >
-    </el-pagination>
+    <el-skeleton :loading="loading" :rows="5" animated throttle="500">
+      <el-table :data="tableData" border style="width: 99%">
+        <el-table-column prop="id" label="ID" sortable/>
+        <el-table-column prop="teacherName" label="教师名" sortable/>
+        <el-table-column prop="nickName" label="昵称"/>
+        <el-table-column fixed="right" label="操作">
+          <template #default="scope">
+            <el-button plain size="small" @click="handleEdit(scope.row)">
+              <edit style="width: 20px; height: 20px;"/>
+            </el-button>
+            <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row.id)">
+              <template #reference>
+                <el-button type="danger" size="small">
+                  <delete style="width: 20px; height: 20px;"/>
+                </el-button>
+              </template>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+          v-model:currentPage="currentPage"
+          :page-sizes="[5, 10, 20, 50]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+      >
+      </el-pagination>
+    </el-skeleton>
   </div>
 </template>
 
@@ -66,12 +72,12 @@
 
 import request from "../utils/request";
 import md5 from "crypto-js/md5";
-import { Search } from '@element-plus/icons-vue'
+import {Delete, Edit, Search} from '@element-plus/icons-vue'
 
 export default {
   name: 'Teacher',
   components: {
-    Search
+    Search, Edit, Delete
   },
   data() {
     return {
@@ -80,6 +86,7 @@ export default {
       pageSize: 10,
       searchContent: "",
       dialogVisible: false,
+      loading: true,
       form: {},
       tableData: [],
       rules: {
@@ -100,6 +107,7 @@ export default {
   },
   methods: {
     handleLoad() {
+      this.loading = true;
       request.get("/api/teacher", {
         params: {
           pageSize: this.pageSize,
@@ -110,9 +118,11 @@ export default {
         console.log(res);
         this.tableData = res.data.records;
         this.total = res.data.total;
+        this.loading = false;
       }).catch(err => {
         console.log(err)
         this.$message({type: "warning", message: "请求失败"})
+        this.loading = false;
       })
     },
     handleAdd() {

@@ -69,46 +69,52 @@
         </template>
       </el-dropdown>
     </el-radio-group>
-    <el-table :data="tableData" border style="width: 99%">
-      <el-table-column prop="stuId" label="学生 ID" sortable v-if="tableShow[0]"/>
-      <el-table-column prop="stuName" label="学生名" sortable v-if="tableShow[1]"/>
-      <el-table-column prop="stuNickName" label="学生昵称" v-if="tableShow[2]"/>
-      <el-table-column prop="courseId" label="课程 ID" v-if="tableShow[3]"/>
-      <el-table-column prop="courseNo" label="课程号" sortable v-if="tableShow[4]"/>
-      <el-table-column prop="courseName" label="课程名" v-if="tableShow[5]"/>
-      <el-table-column prop="score" label="成绩" sortable v-if="tableShow[6]"/>
-      <el-table-column fixed="right" label="操作" width="145">
-        <template #default="scope">
-          <el-button plain size="small" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row)">
-            <template #reference>
-              <el-button type="danger" size="small">删除</el-button>
-            </template>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-        v-model:currentPage="currentPage"
-        :page-sizes="[5, 10, 20, 50, 100]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-    >
-    </el-pagination>
+    <el-skeleton :loading="loading" :rows="5" animated throttle="500">
+      <el-table :data="tableData" border style="width: 99%">
+        <el-table-column prop="stuId" label="学生 ID" sortable v-if="tableShow[0]"/>
+        <el-table-column prop="stuName" label="学生名" sortable v-if="tableShow[1]"/>
+        <el-table-column prop="stuNickName" label="学生昵称" v-if="tableShow[2]"/>
+        <el-table-column prop="courseId" label="课程 ID" v-if="tableShow[3]"/>
+        <el-table-column prop="courseNo" label="课程号" sortable v-if="tableShow[4]"/>
+        <el-table-column prop="courseName" label="课程名" v-if="tableShow[5]"/>
+        <el-table-column prop="score" label="成绩" sortable v-if="tableShow[6]"/>
+        <el-table-column fixed="right" label="操作" width="145">
+          <template #default="scope">
+            <el-button plain size="small" @click="handleEdit(scope.row)">
+              <edit style="width: 20px; height: 20px;"/>
+            </el-button>
+            <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row)">
+              <template #reference>
+                <el-button type="danger" size="small">
+                  <delete style="width: 20px; height: 20px;"/>
+                </el-button>
+              </template>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+          v-model:currentPage="currentPage"
+          :page-sizes="[5, 10, 20, 50, 100]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+      >
+      </el-pagination>
+    </el-skeleton>
   </div>
 </template>
 
 <script>
 import request from "../utils/request";
-import {ArrowDown} from '@element-plus/icons-vue'
+import {ArrowDown, Delete, Edit} from '@element-plus/icons-vue'
 
 export default {
   name: "Score",
   components: {
-    ArrowDown
+    ArrowDown, Edit, Delete
   },
   data() {
     return {
@@ -124,7 +130,8 @@ export default {
         courseNo: "",
         courseName: "高等数学"
       },
-      tableShow: [false, true, true, false, true, true, true]
+      tableShow: [false, true, true, false, true, true, true],
+      loading: false,
     }
   },
   created() {
@@ -166,9 +173,11 @@ export default {
         console.log(res);
         this.tableData = res.data.records;
         this.total = res.data.total;
+        this.loading = false;
       }).catch(err => {
         console.log(err);
         this.$message({type: "warning", message: "请求失败"});
+        this.loading = false;
       })
     },
     getByCourseNo() {
@@ -178,8 +187,10 @@ export default {
         console.log(res);
         this.tableData = res.data.records;
         this.total = res.data.total;
+        this.loading = false;
       }).catch(err => {
         console.log(err);
+        this.loading = false;
         this.$message({type: "warning", message: "请求失败"});
       })
     },
@@ -190,12 +201,15 @@ export default {
         console.log(res);
         this.tableData = res.data.records;
         this.total = res.data.total;
+        this.loading = false;
       }).catch(err => {
         console.log(err);
+        this.loading = false;
         this.$message({type: "warning", message: "请求失败"});
       })
     },
     handleLoad() {
+      this.loading = true;
       switch (this.queryMethod) {
         case 1: {
           this.getByStuName();

@@ -25,9 +25,10 @@
           <el-menu-item index="teacher">教师账号管理</el-menu-item>
         </el-sub-menu>
       </el-sub-menu>
-      <el-menu-item>
+      <el-sub-menu>
         <template #title>题库管理</template>
-      </el-menu-item>
+        <el-menu-item index="exercises">题目</el-menu-item>
+      </el-sub-menu>
     </el-menu>
   </div>
 </template>

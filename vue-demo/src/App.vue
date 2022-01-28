@@ -13,7 +13,8 @@ import {mapState} from "vuex";
 
 export default {
   name: "App",
-  components: {},
+  components: {
+  },
   computed: mapState(["hasLogin"]), // 很迷，getters 里啥都没有
   created() {
     if (!this.hasLogin) {
