@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * 自定义类 Pager 用于查找题目的返回
+ * @param <T> T 表示一个泛型
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

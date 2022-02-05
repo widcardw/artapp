@@ -13,10 +13,10 @@
         </el-form-item>
       </el-form>
       <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="dialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="handleSave">确认</el-button>
-            </span>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSave">确认</el-button>
+        </span>
       </template>
     </el-dialog>
     <el-radio-group v-model="queryMethod" style="padding-bottom: 10px;">
@@ -26,11 +26,8 @@
       </el-radio>
       <el-radio :label="2">
         按课程号
-        <el-input v-model="queryContent.courseNo" clearable style="width: 75%;" @click="queryMethod=2"></el-input>
-      </el-radio>
-      <el-radio :label="3">
-        按课程名
-        <el-input v-model="queryContent.courseName" clearable style="width: 75%;" @click="queryMethod=3"></el-input>
+        <el-select-v2 v-model="queryContent.courseNo" filterable style="width: 75%" :options="courseNos"
+                      @click="queryMethod=2"/>
       </el-radio>
       <el-button @click="handleLoad" type="primary">
         查询
@@ -69,41 +66,39 @@
         </template>
       </el-dropdown>
     </el-radio-group>
-    <el-skeleton :loading="loading" :rows="5" animated throttle="500">
-      <el-table :data="tableData" border style="width: 99%">
-        <el-table-column prop="stuId" label="学生 ID" sortable v-if="tableShow[0]"/>
-        <el-table-column prop="stuName" label="学生名" sortable v-if="tableShow[1]"/>
-        <el-table-column prop="stuNickName" label="学生昵称" v-if="tableShow[2]"/>
-        <el-table-column prop="courseId" label="课程 ID" v-if="tableShow[3]"/>
-        <el-table-column prop="courseNo" label="课程号" sortable v-if="tableShow[4]"/>
-        <el-table-column prop="courseName" label="课程名" v-if="tableShow[5]"/>
-        <el-table-column prop="score" label="成绩" sortable v-if="tableShow[6]"/>
-        <el-table-column fixed="right" label="操作" width="145">
-          <template #default="scope">
-            <el-button plain size="small" @click="handleEdit(scope.row)">
-              <edit style="width: 20px; height: 20px;"/>
-            </el-button>
-            <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row)">
-              <template #reference>
-                <el-button type="danger" size="small">
-                  <delete style="width: 20px; height: 20px;"/>
-                </el-button>
-              </template>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-          v-model:currentPage="currentPage"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-      >
-      </el-pagination>
-    </el-skeleton>
+    <el-table :data="tableData" border style="width: 99%" v-loading="loading">
+      <el-table-column prop="stuId" label="学生 ID" sortable v-if="tableShow[0]"/>
+      <el-table-column prop="stuName" label="学生名" sortable v-if="tableShow[1]"/>
+      <el-table-column prop="stuNickName" label="学生昵称" v-if="tableShow[2]"/>
+      <el-table-column prop="courseId" label="课程 ID" v-if="tableShow[3]"/>
+      <el-table-column prop="courseNo" label="课程号" sortable v-if="tableShow[4]"/>
+      <el-table-column prop="courseName" label="课程名" v-if="tableShow[5]"/>
+      <el-table-column prop="score" label="成绩" sortable v-if="tableShow[6]"/>
+      <el-table-column fixed="right" label="操作" width="145">
+        <template #default="scope">
+          <el-button plain size="small" @click="handleEdit(scope.row)">
+            <edit style="width: 20px; height: 20px;"/>
+          </el-button>
+          <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row)">
+            <template #reference>
+              <el-button type="danger" size="small">
+                <delete style="width: 20px; height: 20px;"/>
+              </el-button>
+            </template>
+          </el-popconfirm>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+        v-model:currentPage="currentPage"
+        :page-sizes="[5, 10, 20, 50, 100]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -124,17 +119,19 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 50,
-      queryMethod: 3,
+      queryMethod: 2,
       queryContent: {
         stuName: "",
         courseNo: "",
         courseName: "高等数学"
       },
+      courseNos: [],
       tableShow: [false, true, true, false, true, true, true],
       loading: false,
     }
   },
   created() {
+    this.getCourseInfo();
     // this.handleLoad();
   },
   methods: {
@@ -156,7 +153,7 @@ export default {
         } else {
           this.$message({type: "error", message: res.msg});
         }
-      })
+      });
     },
     handleDelete(row) {
     },
@@ -192,6 +189,15 @@ export default {
         console.log(err);
         this.loading = false;
         this.$message({type: "warning", message: "请求失败"});
+      })
+    },
+    getCourseInfo() {
+      request.get("/api/course/all").then(res => {
+        console.log(res);
+        this.courseNos = res.data;
+      }).catch(err => {
+        console.log(err);
+        this.$message({type: "warning", message: "课程信息请求失败"});
       })
     },
     getByCourseName() {

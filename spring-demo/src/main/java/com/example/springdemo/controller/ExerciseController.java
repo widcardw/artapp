@@ -35,4 +35,23 @@ public class ExerciseController {
         Pager<Exercise> page = exerciseService.getExerciseByType(type, pageNum, pageSize);
         return Result.success(page);
     }
+
+    @PostMapping("/one")
+    public Result<?> insertOne(@RequestBody Exercise exercise) {
+        Exercise exercise1 = exerciseService.insertOne(exercise);
+        System.out.println(exercise);
+        return Result.success(exercise1);
+    }
+
+    @DeleteMapping("/id/{id}")
+    public Result<?> deleteById(@PathVariable("id") String id) {
+        exerciseService.deleteById(id);
+        return Result.success();
+    }
+
+    @PutMapping("/one")
+    public Result<?> updateOne(@RequestBody Exercise exercise) {
+        exerciseService.updateExercise(exercise);
+        return Result.success();
+    }
 }

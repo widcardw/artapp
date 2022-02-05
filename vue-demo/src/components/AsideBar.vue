@@ -12,20 +12,20 @@
       <el-menu-item index="home" :route="{path: '/'}">
         <template #title>首页</template>
       </el-menu-item>
-      <el-sub-menu>
+      <el-sub-menu index="2">
         <template #title>用户管理</template>
-        <el-sub-menu>
+        <el-sub-menu index="2-1">
           <template #title>学生部分</template>
           <el-menu-item index="user">学生管理</el-menu-item>
           <el-menu-item index="course">课程管理</el-menu-item>
           <el-menu-item index="score">成绩管理</el-menu-item>
         </el-sub-menu>
-        <el-sub-menu v-if="$store.getters.adminSelection === 2">
+        <el-sub-menu v-if="$store.getters.adminSelection === 2" index="2-2">
           <template #title>教师部分</template>
           <el-menu-item index="teacher">教师账号管理</el-menu-item>
         </el-sub-menu>
       </el-sub-menu>
-      <el-sub-menu>
+      <el-sub-menu index="3">
         <template #title>题库管理</template>
         <el-menu-item index="exercises">题目</el-menu-item>
       </el-sub-menu>

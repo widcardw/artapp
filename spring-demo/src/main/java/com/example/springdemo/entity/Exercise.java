@@ -19,6 +19,5 @@ public class Exercise implements Serializable {
     private Long id;
     private String type;
     private String content;
-    private Map<String, Object> choices;
-    private String answer;
+    private List<Map<String, Object>> choices;
 }

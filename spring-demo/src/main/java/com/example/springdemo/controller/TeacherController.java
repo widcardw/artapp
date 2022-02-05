@@ -8,6 +8,8 @@ import com.example.springdemo.common.Result;
 import com.example.springdemo.entity.Admin;
 import com.example.springdemo.entity.Teacher;
 import com.example.springdemo.mapper.TeacherMapper;
+import com.example.springdemo.service.TeacherService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -15,12 +17,13 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/teacher")
 public class TeacherController {
-    @Resource
-    TeacherMapper teacherMapper;
+
+    @Autowired
+    TeacherService teacherService;
 
     @PostMapping
     public Result<?> save(@RequestBody Teacher teacher) {
-        if (existsUserName(teacher.getTeacherName())) {
+        if(teacherService.isExist(teacher.getTeacherName())) {
             return Result.error("-1", "教师名重复");
         }
         // 判断发送过来的密码是否为空
@@ -39,15 +42,13 @@ public class TeacherController {
         if (!NameValidater.nickNameValid(teacher.getNickName())) {
             return Result.nickNameError();
         }
-        teacherMapper.insert(teacher);
-        return Result.success();
+        int i = teacherService.insertTeacher(teacher);
+        return Result.success(i);
     }
 
     @PostMapping("/login")  // 接口为 /teacher/login
     public Result<?> login(@RequestBody Teacher teacher) {
-        Teacher res = teacherMapper.selectOne(Wrappers.<Teacher>lambdaQuery()
-                .eq(Teacher::getTeacherName, teacher.getTeacherName())
-                .eq(Teacher::getPassword, teacher.getPassword()));
+        Teacher res = teacherService.login(teacher);
         if (res == null) {
             return Result.error("-1", "用户名或密码错误!");
         }
@@ -72,8 +73,8 @@ public class TeacherController {
         if (!NameValidater.nickNameValid(teacher.getNickName())) {
             return Result.nickNameError();
         }
-        teacherMapper.updateById(teacher);
-        return Result.success();
+        int i = teacherService.updateTeacher(teacher);
+        return Result.success(i);
     }
 
     @GetMapping("/info")
@@ -81,9 +82,7 @@ public class TeacherController {
         if (StrUtil.isBlank(teacherName)) {
             return Result.error("-2", "教师信息获取失败!");
         }
-        LambdaQueryWrapper<Teacher> wrapper = Wrappers.<Teacher>lambdaQuery();
-        wrapper.eq(Teacher::getTeacherName, teacherName);
-        Teacher res = teacherMapper.selectOne(wrapper);
+        Teacher res = teacherService.getTeacherByName(teacherName);
         return Result.success(res);
     }
 
@@ -91,22 +90,13 @@ public class TeacherController {
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search) {
-        LambdaQueryWrapper<Teacher> wrapper = Wrappers.<Teacher>lambdaQuery();
-        if (StrUtil.isNotBlank(search)) {
-            wrapper.like(Teacher::getTeacherName, search);
-        }
-        Page<Teacher> teacherPage = teacherMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
-        return Result.success(teacherPage);
+        Page<Teacher> teacherByPage = teacherService.getTeacherByPage(pageNum, pageSize, search);
+        return Result.success(teacherByPage);
     }
 
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable Long id) {
-        teacherMapper.deleteById(id);
+        teacherService.deleteTeacherById(id);
         return Result.success();
-    }
-
-    private boolean existsUserName(String username) {
-        Teacher teacher = teacherMapper.selectOne(Wrappers.<Teacher>lambdaQuery().eq(Teacher::getTeacherName, username));
-        return teacher != null;
     }
 }

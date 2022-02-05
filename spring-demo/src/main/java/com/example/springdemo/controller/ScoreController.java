@@ -65,4 +65,13 @@ public class ScoreController {
         }
         return Result.success();
     }
+
+    @DeleteMapping
+    public Result<?> delete(@RequestBody Score score) {
+        boolean b = scoreService.delete(score.getStuId(), score.getCourseId());
+        if (!b) {
+            return Result.error("-2", "成绩删除失败");
+        }
+        return Result.success();
+    }
 }

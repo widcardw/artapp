@@ -4,17 +4,12 @@ import com.example.springdemo.common.Pager;
 import com.example.springdemo.entity.Exercise;
 import com.example.springdemo.mapper.ExerciseDao;
 import com.example.springdemo.service.ExerciseService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Service("ExerciseService")
@@ -44,8 +39,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public Exercise getExerciseById(Integer id) {
         Query query = new Query(Criteria.where("id").is(id));
-        Exercise one = mongoTemplate.findOne(query, Exercise.class);
-        return one;
+        return mongoTemplate.findOne(query, Exercise.class);
     }
 
     @Override
@@ -56,4 +50,20 @@ public class ExerciseServiceImpl implements ExerciseService {
                 query.skip((long) (pageNum - 1) * pageSize).limit(pageSize), Exercise.class);
         return new Pager<>(list, total, pageNum, pageSize);
     }
+
+    @Override
+    public Exercise insertOne(Exercise exercise) {
+        return mongoTemplate.insert(exercise);
+    }
+
+    @Override
+    public void deleteById(String _id) {
+        mongoTemplate.remove(new Query(Criteria.where("_id").is(_id)), Exercise.class);
+    }
+
+    @Override
+    public void updateExercise(Exercise exercise) {
+        mongoTemplate.save(exercise);
+    }
+
 }

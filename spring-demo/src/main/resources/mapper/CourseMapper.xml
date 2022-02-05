@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springdemo.mapper.CourseMapper">
+    <select id="selectAllCourseNo" resultType="String">
+        SELECT course_no FROM course
+    </select>
+    <select id="selectAllCourseName" resultType="String">
+        select course_name from course
+    </select>
+    <select id="selectAllCourse" resultType="com.example.springdemo.entity.CourseInfo">
+        select course_no as 'value', course_name as 'label' from course
+    </select>
+</mapper>

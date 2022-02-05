@@ -28,13 +28,15 @@
         </el-dialog>
       </div>
       <div style="display: flex;">
-        <el-input v-model="searchContent" clearable placeholder="输入关键字搜索" style="min-width: 300px;"
-                  :prefix-icon="Search"/>
+        <el-input v-model="searchContent" clearable placeholder="输入关键字搜索" style="min-width: 300px;">
+          <template #prefix>
+            <el-icon class="el-input__icon"><search /></el-icon>
+          </template>
+        </el-input>
         <el-button type="primary" style="margin-left: 5px;" @click="handleLoad">查询</el-button>
       </div>
     </div>
-    <el-skeleton :loading="loading" :rows="5" animated throttle="500">
-      <el-table :data="tableData" border style="width: 99%">
+      <el-table :data="tableData" border style="width: 99%" v-loading="loading">
         <el-table-column prop="id" label="ID" sortable/>
         <el-table-column prop="username" label="用户名" sortable/>
         <el-table-column prop="nickName" label="昵称"/>
@@ -63,7 +65,6 @@
           @current-change="handleCurrentChange"
       >
       </el-pagination>
-    </el-skeleton>
   </div>
 </template>
 

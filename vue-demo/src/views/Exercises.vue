@@ -1,74 +1,122 @@
 <template>
   <div style="padding: 10px;">
-    <el-radio-group v-model="queryMethod" style="padding-bottom: 10px;">
-      <el-radio :label="1">
-        按编号
-        <el-input v-model="queryContent.id" clearable style="width: 75%;" @click="queryMethod=1"></el-input>
-      </el-radio>
-      <el-radio :label="2">
-        按类别
-        <el-input v-model="queryContent.type" clearable style="width: 75%;" @click="queryMethod=2"></el-input>
-      </el-radio>
-      <el-button @click="handleQuery" type="primary">
-        查询
-      </el-button>
-    </el-radio-group>
-    <el-skeleton :loading="loading" :rows="5" animated>
-      <el-table :data="tableData" border style="width: 99%;">
-        <!--      <el-table-column prop="_id" label="_id" width="100" style="display: none;"/>-->
-        <el-table-column prop="id" label="ID" width="140"/>
-        <el-table-column
-            prop="type"
-            label="题目类型"
-            width="140"
-        ></el-table-column>
-        <el-table-column prop="content" label="题目描述"/>
-        <el-table-column label="选项内容">
-          <template #default="scope">
-            <tr v-for="(item, index) in scope.row.choices" :key="(item, index)">
-              <td class="el-table__cell choice-cell">{{ index }}</td>
-              <td class="el-table__cell choice-cell">{{ item }}</td>
-            </tr>
+    <div class="operation-bar">
+      <div>
+        <el-button type="primary" @click="handleAdd">新增</el-button>
+        <el-button type="primary">导入</el-button>
+        <el-button type="primary">导出</el-button>
+
+        <el-dialog v-model="dialogVisible" title="提示" width="50%">
+          <el-form label-width="120px" :model="form" :rules="rules" ref="form">
+            <el-form-item label="题号" prop="id">
+              <el-input v-model="form.id" style="width: 85%;" maxlength="255" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="题目类型" prop="type">
+              <el-input v-model="form.type" style="width: 85%;" maxlength="255" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="题目描述" prop="content">
+              <el-input v-model="form.content" style="width: 85%;" type="textarea" maxlength="1024"
+                        clearable></el-input>
+            </el-form-item>
+            <el-form-item :label="String.fromCharCode(index + 65)" v-for="(item, index) in form.choices"
+                          :key="(item, index)" prop="choices">
+              <div style="display: grid;grid-template-columns: 85% 15%; width: 100%">
+                <el-input v-model="item.ccontent" property="value">
+                  <template #prepend>
+                    <el-button @click="removeChoice(index)">
+                      <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                        <el-icon>
+                          <minus/>
+                        </el-icon>
+                      </el-tooltip>
+                    </el-button>
+                  </template>
+                  <template #append>
+                    <el-button @click="insertChoice(index)">
+                      <el-tooltip class="item" effect="dark" content="添加" placement="top">
+                        <el-icon>
+                          <plus/>
+                        </el-icon>
+                      </el-tooltip>
+                    </el-button>
+                  </template>
+                </el-input>
+                <el-checkbox v-model="item.canswer" style="margin-left: 15px;">答案</el-checkbox>
+              </div>
+            </el-form-item>
+          </el-form>
+          <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSave">确认</el-button>
+        </span>
           </template>
-        </el-table-column>
-        <el-table-column prop="answer" label="答案" width="60" align="center"/>
-        <el-table-column fixed="right" label="操作" width="145" align="center">
-          <template #default="scope">
-            <el-button plain size="small" @click="handleEdit(scope.row)">
-              <edit style="width: 20px; height: 20px;"/>
-            </el-button>
-            <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row._id)">
-              <template #reference>
-                <el-button type="danger" size="small">
-                  <delete style="width: 20px; height: 20px;"/>
-                </el-button>
-              </template>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-          v-model:currentPage="currentPage"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-      >
-      </el-pagination>
-    </el-skeleton>
+        </el-dialog>
+      </div>
+      <el-radio-group v-model="queryMethod" style="padding-bottom: 10px;">
+        <el-radio :label="0" @click="queryByPage">
+          总览
+        </el-radio>
+        <el-radio :label="1">
+          按编号
+          <el-input v-model="queryContent.id" clearable style="width: 90%;" @click="queryMethod=1"></el-input>
+        </el-radio>
+        <el-radio :label="2">
+          按类别
+          <el-input v-model="queryContent.type" clearable style="width: 90%;" @click="queryMethod=2"></el-input>
+        </el-radio>
+        <el-button @click="handleQuery" type="primary">
+          查询
+        </el-button>
+      </el-radio-group>
+    </div>
+
+    <div v-loading="loading">
+      <el-empty description="没有数据" v-if="tableData.length===0"></el-empty>
+      <el-descriptions v-for="ex in tableData" border :column="1"
+                       style="margin-bottom: 10px; border: 1px solid var(--el-border-color-base); padding: 10px;"
+                       :title="'题号 ' + ex.id">
+        <template #extra>
+          <el-button @click="editEx(ex)">编辑</el-button>
+          <el-popconfirm title="确认删除这条数据吗" @confirm="deleteEx(ex)">
+            <template #reference>
+              <el-button type="danger">删除</el-button>
+            </template>
+          </el-popconfirm>
+        </template>
+        <el-descriptions-item label="题目类型">{{ ex.type }}</el-descriptions-item>
+        <el-descriptions-item label="题目描述">{{ ex.content }}</el-descriptions-item>
+        <el-descriptions-item label="选项">
+          <el-checkbox v-for="(item, index) in ex.choices" :key="(item, index)"
+                       :label="String.fromCharCode(index + 65)"
+                       :checked="item.canswer===true"
+          >{{ item.cid }}. {{ item.ccontent }}
+          </el-checkbox>
+        </el-descriptions-item>
+      </el-descriptions>
+    </div>
+
+    <el-pagination
+        v-model:currentPage="currentPage"
+        :page-sizes="[5, 10, 20, 50, 100]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+    >
+    </el-pagination>
   </div>
 </template>
 
 <script>
-import {Delete, Edit} from "@element-plus/icons-vue";
+import {Delete, Edit, Plus, Minus} from "@element-plus/icons-vue";
 import request from "../utils/request";
 
 export default {
   name: "Exercises",
   components: {
-    Edit, Delete
+    Edit, Delete, Plus, Minus
   },
   data() {
     return {
@@ -77,44 +125,134 @@ export default {
       total: 0,
       loading: false,
       tableData: [],
-      queryMethod: 1,
-      queryContent: {}
+      queryMethod: 0,
+      queryContent: {},
+      dialogVisible: false,
+      form: {},
+      rules: {
+        id: [
+          {required: true, message: '请输入题号', trigger: 'blur'}
+        ],
+        type: [
+          {required: true, message: '请输入题目类型', trigger: 'blur'}
+        ],
+        content: [
+          {required: true, message: '请输入题目描述', trigger: 'blur'}
+        ],
+        choices: [
+          {required: true, message: '请输入选项', trigger: 'blur'}
+        ]
+      }
     };
   },
   created() {
-    this.handleLoad();
+    this.queryByPage();
   },
   methods: {
-    handleEdit(row) {
-      let data = JSON.parse(JSON.stringify(row))
-      console.log(data);
+    handleSave() {
+      this.form.choices.forEach((item, index) => {
+        item.cid = String.fromCharCode(index + 65);
+      });
+      console.log(this.form)
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          // 没有 _id 表示新增
+          if (!this.form._id || this.form._id === '') {
+            request({
+              url: "/api/exercise/one",
+              method: "post",
+              data: this.form
+            }).then(res => {
+              console.log(res)
+              if (res.code === "0") {
+                this.dialogVisible = false;
+                this.handleQuery();
+                this.$message({type: "success", message: "添加成功"});
+              } else {
+                this.$message({type: "error", message: res.msg});
+              }
+            }).catch(err => {
+              this.$message.error(err.message);
+            }).finally(() => {
+              this.loading = false;
+            });
+          } else {
+            // 有 _id 表示编辑
+            request({
+              url: "/api/exercise/one",
+              method: "put",
+              data: this.form
+            }).then(res => {
+              console.log(res)
+              if (res.code === "0") {
+                this.dialogVisible = false;
+                this.handleQuery();
+                this.$message({type: "success", message: "修改成功"});
+              } else {
+                this.$message({type: "error", message: res.msg});
+              }
+            }).catch(err => {
+              this.$message.error(err.message);
+            }).finally(() => {
+              this.loading = false;
+            });
+          }
+        }
+      });
     },
-    handleDelete(_id) {
-      console.log(_id);
+    handleAdd() {
+      this.form = {
+        choices: [{ccontent: "", canswer: false}]
+      }
+      this.dialogVisible = true;
     },
-    handleSizeChange() {
-      this.handleLoad();
+    editEx(ex) {
+      this.form = ex;
+      this.dialogVisible = true;
     },
-    handleCurrentChange() {
-      this.handleLoad();
+    deleteEx(ex) {
+      this.loading = true;
+      request({
+        url: `/api/exercise/id/${ex._id}`,
+        method: 'delete'
+      }).then((res) => {
+        if (res.code === "0") {
+          this.$message({type: "success", message: "删除成功"});
+          this.handleQuery();
+        } else {
+          this.$message({type: "error", message: res.msg});
+        }
+      }).catch((err) => {
+        this.$message.error(err.message);
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.handleQuery();
+    },
+    handleCurrentChange(pageNum) {
+      this.currentPage = pageNum;
+      this.handleQuery();
     },
     queryById() {
       this.loading = true;
-      request.get("/api/exercise/id/" + this.queryContent.id, {
-        params: {
-          pageNum: this.currentPage,
-          pageSize: this.pageSize,
-        }
-      }).then(res => {
+      request.get("/api/exercise/id/" + this.queryContent.id).then(res => {
         console.log(res);
-        this.tableData = [res.data];
+        if (res.data) {
+          this.tableData = [res.data];
+        } else {
+          this.tableData = [];
+        }
         this.total = 1;
-        this.loading = false;
       }).catch(err => {
         console.log(err);
         this.$message({type: "warning", message: "请求失败"});
+      }).finally(() => {
         this.loading = false;
-      })
+      });
     },
     queryByType() {
       this.loading = true;
@@ -127,15 +265,20 @@ export default {
         console.log(res);
         this.tableData = res.data.content;
         this.total = res.data.total;
-        this.loading = false;
       }).catch(err => {
         console.log(err);
         this.$message({type: "warning", message: "请求失败"});
+      }).finally(() => {
         this.loading = false;
-      })
+      });
     },
     handleQuery() {
+      this.tableData = []
       switch (this.queryMethod) {
+        case 0: {
+          this.queryByPage();
+          break;
+        }
         case 1: {
           this.queryById()
           break;
@@ -146,7 +289,7 @@ export default {
         }
       }
     },
-    handleLoad() {
+    queryByPage() {
       this.loading = true;
       request.get("/api/exercise/page", {
         params: {
@@ -157,22 +300,33 @@ export default {
         console.log(res);
         this.tableData = res.data.content;
         this.total = res.data.total;
-        this.loading = false;
       }).catch(err => {
         console.log(err);
         this.$message({type: "warning", message: "请求失败"});
+      }).finally(() => {
         this.loading = false;
-      })
+      });
+    },
+    removeChoice(index) {
+      if (this.form.choices.length > 1) {
+        this.form.choices.splice(index, 1);
+      }
+    },
+    insertChoice(index) {
+      console.log(index);
+      if (!this.form || !this.form.choices) {
+        this.form.choices = [{ccontent: "", canswer: false}]
+      }
+      this.form.choices.splice(index + 1, 0, {ccontent: "", canswer: false});
     },
   }
 }
 </script>
 
 <style scoped>
-.choice-cell {
-  padding-left: 0.5em !important;
-  padding-right: 0.5em !important;
-  border-left: none !important;
-  border-right: none !important;
+.operation-bar {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

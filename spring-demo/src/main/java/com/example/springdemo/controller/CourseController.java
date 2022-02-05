@@ -8,21 +8,25 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springdemo.common.Result;
 import com.example.springdemo.entity.Course;
 import com.example.springdemo.mapper.CourseMapper;
+import com.example.springdemo.service.CourseService;
+import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/course")
 public class CourseController {
 
-    @Resource
-    CourseMapper courseMapper;
+    @Autowired
+    CourseService courseService;
 
     @PostMapping  // 新增
     public Result<?> save(@RequestBody Course course) {
         // 判断课程号是否已存在
-        if (existCourseNo(course.getCourseNo())) {
+        if (courseService.isCourseExist(course.getCourseNo())) {
             return Result.error("-1", "课程号已经存在");
         }
         if (course.getCourseName() == null) {
@@ -34,8 +38,8 @@ public class CourseController {
         if (!NameValidater.nickNameValid(course.getCourseName())) {
             return Result.error("-4", "课程名不合法");
         }
-        courseMapper.insert(course);
-        return Result.success();
+        int i = courseService.insertCourse(course);
+        return Result.success(i);
     }
 
     @PutMapping
@@ -49,30 +53,40 @@ public class CourseController {
         if (!NameValidater.nickNameValid(course.getCourseName())) {
             return Result.error("-4", "课程名不合法");
         }
-        courseMapper.updateById(course);
-        return Result.success();
+        int i = courseService.updateCourse(course);
+        return Result.success(i);
     }
 
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search) {
-        LambdaQueryWrapper<Course> wrapper = Wrappers.<Course>lambdaQuery();
-        if (StrUtil.isNotBlank(search)) {
-            wrapper.like(Course::getCourseName, search);
-        }
-        Page<Course> res = courseMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        Page<Course> res = courseService.selectCourseByPage(pageNum, pageSize, search);
         return Result.success(res);
+    }
+
+    @GetMapping("/no")
+    public Result<?> getAllCourseNo() {
+        List<String> data = courseService.selectAllCourseNo();
+        return Result.success(data);
+    }
+
+    @GetMapping("/name")
+    public Result<?> getAllCourseName() {
+        List<String> data = courseService.selectAllCourseName();
+        return Result.success(data);
+    }
+
+    @GetMapping("/all")
+    public Result<?> getAllCourse() {
+        List<Course> data = courseService.selectAllCourse();
+        return Result.success(data);
     }
 
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable Long id) {
-        courseMapper.deleteById(id);
-        return Result.success();
+        int i = courseService.deleteCourseById(id);
+        return Result.success(i);
     }
 
-    public boolean existCourseNo(String courseNo) {
-        Course res = courseMapper.selectOne(Wrappers.<Course>lambdaQuery().eq(Course::getCourseNo, courseNo));
-        return res != null;
-    }
 }
