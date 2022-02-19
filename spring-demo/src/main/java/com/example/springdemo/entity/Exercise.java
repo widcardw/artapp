@@ -1,6 +1,5 @@
 package com.example.springdemo.entity;
 
-import javafx.util.Pair;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;

@@ -160,7 +160,7 @@ export default {
           // 没有 _id 表示新增
           if (!this.form._id || this.form._id === '') {
             request({
-              url: "/api/exercise/one",
+              url: "/exercise/one",
               method: "post",
               data: this.form
             }).then(res => {
@@ -180,7 +180,7 @@ export default {
           } else {
             // 有 _id 表示编辑
             request({
-              url: "/api/exercise/one",
+              url: "/exercise/one",
               method: "put",
               data: this.form
             }).then(res => {
@@ -214,7 +214,7 @@ export default {
     deleteEx(ex) {
       this.loading = true;
       request({
-        url: `/api/exercise/id/${ex._id}`,
+        url: `/exercise/id/${ex._id}`,
         method: 'delete'
       }).then((res) => {
         if (res.code === "0") {
@@ -239,7 +239,7 @@ export default {
     },
     queryById() {
       this.loading = true;
-      request.get("/api/exercise/id/" + this.queryContent.id).then(res => {
+      request.get("/exercise/id/" + this.queryContent.id).then(res => {
         console.log(res);
         if (res.data) {
           this.tableData = [res.data];
@@ -256,7 +256,7 @@ export default {
     },
     queryByType() {
       this.loading = true;
-      request.get("/api/exercise/type/" + this.queryContent.type, {
+      request.get("/exercise/type/" + this.queryContent.type, {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
@@ -291,7 +291,7 @@ export default {
     },
     queryByPage() {
       this.loading = true;
-      request.get("/api/exercise/page", {
+      request.get("/exercise/page", {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,

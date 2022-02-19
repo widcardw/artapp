@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const request = axios.create({
-    baseURL: '',
+    baseURL: '/api',
     timeout: 5000
 })
 
@@ -37,6 +37,5 @@ request.interceptors.response.use(
         return Promise.reject(error)
     }
 )
-
 
 export default request

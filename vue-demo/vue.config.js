@@ -10,13 +10,14 @@ module.exports = {
                     '^/api': ''                     //选择忽略拦截器里面的内容
                 }
             },
-            '/wallpaper': {
-                target: 'https://cn.bing.com/HPImageArchive.aspx',     //代理的目标地址
-                changeOrigin: true,              //是否设置同源，输入是的
-                pathRewrite: {                   //路径重写
-                    '^/wallpaper': ''                     //选择忽略拦截器里面的内容
-                }
-            }
+            // '/wallpaper': {
+            //     target: 'https://cn.bing.com/HPImageArchive.aspx',     //代理的目标地址
+            //     changeOrigin: true,              //是否设置同源，输入是的
+            //     pathRewrite: {                   //路径重写
+            //         '^/wallpaper': ''                     //选择忽略拦截器里面的内容
+            //     }
+            // }
         }
-    }
+    },
+    publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
 }

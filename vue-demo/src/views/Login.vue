@@ -77,7 +77,7 @@ export default {
       this.form = {};
     },
     teacherLogin() {
-      request.post("/api/teacher/login", this.form).then(res => {
+      request.post("/teacher/login", this.form).then(res => {
         console.log(res);
         this.isLogging = false;
         if (res.code === "0") {
@@ -90,10 +90,15 @@ export default {
         } else {
           this.$message({type: "error", message: res.msg});
         }
-      })
+      }).catch(err => {
+        this.isLogging = false;
+        this.$message({type: "error", message: err.message});
+      }).finally(() => {
+        this.isLogging = false;
+      });
     },
     adminLogin() {
-      request.post("/api/admin/login", this.form).then(res => {
+      request.post("/admin/login", this.form).then(res => {
         console.log(res);
         this.isLogging = false;
         if (res.code === "0") {
@@ -106,7 +111,12 @@ export default {
         } else {
           this.$message({type: "error", message: res.msg});
         }
-      })
+      }).catch(err => {
+        this.isLogging = false;
+        this.$message({type: "error", message: err.message});
+      }).finally(() => {
+        this.isLogging = false;
+      });
     },
     getWallPaper() {
       request.get('/wallpaper', {

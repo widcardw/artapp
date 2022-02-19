@@ -101,7 +101,7 @@ export default {
   methods: {
     handleLoad() {
       this.loading = true;
-      request.get("/api/course", {
+      request.get("/course", {
         params: {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
@@ -126,7 +126,7 @@ export default {
           }
           if (this.form.id) {
             // 有 id 表示更新
-            request.put("/api/course", this.form
+            request.put("/course", this.form
             ).then(res => {
               console.log(res);
               if (res.code === "0") {
@@ -142,7 +142,7 @@ export default {
             })
           } else {
             // 没有 id 表示新增
-            request.post("/api/course", this.form
+            request.post("/course", this.form
             ).then(res => {
               console.log(res);
               if (res.code === "0") {
@@ -172,7 +172,7 @@ export default {
     },
     handleDelete(id) {
       console.log("delete", id);
-      request.delete("/api/course/" + id).then(res => {
+      request.delete("/course/" + id).then(res => {
         console.log(res);
         if (res.code === "0") {
           this.$message({type: "success", message: "删除成功"})

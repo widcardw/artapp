@@ -144,7 +144,7 @@ export default {
       this.dialogVisible = true;
     },
     handleSave() {
-      request.put("/api/score", this.form).then(res => {
+      request.put("/score", this.form).then(res => {
         console.log(res);
         if (res.code === "0") {
           this.$message({type: "success", message: "更新成功"});
@@ -164,7 +164,7 @@ export default {
       this.handleLoad();
     },
     getByStuName() {
-      request.get("/api/score/stuName/" + this.queryContent.stuName, {
+      request.get("/score/stuName/" + this.queryContent.stuName, {
         params: {pageSize: this.pageSize, pageNum: this.currentPage}
       }).then(res => {
         console.log(res);
@@ -178,7 +178,7 @@ export default {
       })
     },
     getByCourseNo() {
-      request.get("/api/score/courseNo/" + this.queryContent.courseNo, {
+      request.get("/score/courseNo/" + this.queryContent.courseNo, {
         params: {pageSize: this.pageSize, pageNum: this.currentPage}
       }).then(res => {
         console.log(res);
@@ -192,7 +192,7 @@ export default {
       })
     },
     getCourseInfo() {
-      request.get("/api/course/all").then(res => {
+      request.get("/course/all").then(res => {
         console.log(res);
         this.courseNos = res.data;
       }).catch(err => {
@@ -201,7 +201,7 @@ export default {
       })
     },
     getByCourseName() {
-      request.get("/api/score/courseName/" + this.queryContent.courseName, {
+      request.get("/score/courseName/" + this.queryContent.courseName, {
         params: {pageSize: this.pageSize, pageNum: this.currentPage}
       }).then(res => {
         console.log(res);

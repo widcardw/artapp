@@ -1,5 +1,4 @@
-import {createRouter, createWebHistory} from 'vue-router'
-import {store} from "core-js/internals/reflect-metadata";
+import {createRouter, createWebHashHistory} from 'vue-router'
 
 const routes = [
     {
@@ -54,26 +53,8 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
+    history: createWebHashHistory(),
     routes
 })
-
-// router.beforeEach((to, from, next) => {
-//     if (to.matched.some(record => record.meta.requiresAuth)) {
-//         // this route requires auth, check if logged in
-//         // if not, redirect to login page.
-//         console.log("hasLogin", store.getters.hasLogin)
-//         if (!store.getters.hasLogin) {
-//             next({
-//                 path: '/login',
-//                 query: { redirect: to.fullPath }
-//             })
-//         } else {
-//             next()
-//         }
-//     } else {
-//         next() // 确保一定要调用 next()
-//     }
-// })
 
 export default router

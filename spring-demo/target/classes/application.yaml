@@ -5,10 +5,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/artapp?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
     username: root
-    password: 123456
+    password: 12345678
   data:
     mongodb:
       uri: mongodb://admin:123456@localhost:27017/test   # 登录还是得管理员
+  profiles:
+    active: prod  # 只有prod环境才会启动，服务器端命令 `nohup java -jar target/artapp-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod &`
 mybatis:
   mapper-locations: classpath:mapper/*.xml    # mapper 映射文件位置，将 sql 语句写在 xml 文件中，需要通过这里的配置将映射文件引入
   type-aliases-package: com.example.springdemo.entity  # 实体类位置

@@ -109,7 +109,7 @@ export default {
   methods: {
     handleLoad() {
       this.loading = true;
-      request.get("/api/teacher", {
+      request.get("/teacher", {
         params: {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
@@ -141,7 +141,7 @@ export default {
             if (this.form.password && this.form.password.length !== 32) {
               this.encodePassword();
             }
-            request.put("/api/teacher", this.form).then(res => {
+            request.put("/teacher", this.form).then(res => {
               console.log(res);
               if (res.code === "0") {
                 this.$message({type: "success", message: "更新成功"})
@@ -157,7 +157,7 @@ export default {
           } else {
             // 没有 id 表示新增
             this.encodePassword();
-            request.post("/api/teacher", this.form).then(res => {
+            request.post("/teacher", this.form).then(res => {
               console.log(res);
               if (res.code === "0") {
                 this.$message({type: "success", message: "新增成功"})
@@ -182,7 +182,7 @@ export default {
     },
     handleDelete(id) {
       console.log("delete", id);
-      request.delete("/api/teacher/" + id).then(res => {
+      request.delete("/teacher/" + id).then(res => {
         console.log(res);
         if (res.code === "0") {
           this.$message({type: "success", message: "删除成功"})

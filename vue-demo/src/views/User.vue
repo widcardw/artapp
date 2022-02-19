@@ -102,7 +102,7 @@ export default {
   methods: {
     handleLoad() {
       this.loading = true;
-      request.get("/api/user", {
+      request.get("/user", {
         params: {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
@@ -134,7 +134,7 @@ export default {
             if (this.form.password && this.form.password.length !== 32) {
               this.encodePassword();
             }
-            request.put("/api/user", this.form
+            request.put("/user", this.form
             ).then(res => {
               console.log(res);
               if (res.code === "0") {
@@ -151,7 +151,7 @@ export default {
           } else {
             // 没有 id 表示新增
             this.encodePassword();
-            request.post("/api/user", this.form
+            request.post("/user", this.form
             ).then(res => {
               console.log(res);
               if (res.code === "0") {
@@ -177,7 +177,7 @@ export default {
     },
     handleDelete(id) {
       console.log("delete", id);
-      request.delete("/api/user/" + id).then(res => {
+      request.delete("/user/" + id).then(res => {
         console.log(res);
         if (res.code === "0") {
           this.$message({type: "success", message: "删除成功"})

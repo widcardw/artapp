@@ -73,7 +73,7 @@ export default {
         this.encodePassword(this.form2);
       }
       // 发起请求
-      request.put("/api/admin", this.form2).then(res=>{
+      request.put("/admin", this.form2).then(res=>{
         console.log(res);
         if (res.code === "0") {
           this.$message({type:"success", message: "修改成功"});
@@ -90,7 +90,7 @@ export default {
       if (this.form1.password && this.form1.password.length !== 32) {
         this.encodePassword(this.form1);
       }
-      request.put("/api/teacher", this.form1).then(res=>{
+      request.put("/teacher", this.form1).then(res=>{
         console.log(res);
         if (res.code === "0") {
           this.$message({type:"success", message: "修改成功"});
@@ -113,7 +113,7 @@ export default {
       }
     },
     getTeacherInfo() {
-      request.get("/api/teacher/info", {
+      request.get("/teacher/info", {
         params: {
           teacherName: this.loginData.teacherName
         }
@@ -127,7 +127,7 @@ export default {
       });
     },
     getAdminInfo() {
-      request.get("/api/admin/info", {
+      request.get("/admin/info", {
         params: {
           adminName: this.loginData.adminName
         }
