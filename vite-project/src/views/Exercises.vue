@@ -6,7 +6,7 @@
         <el-button type="primary">导入</el-button>
         <el-button type="primary">导出</el-button>
 
-        <el-dialog v-model="dialogVisible" title="提示" width="50%">
+        <el-dialog v-model="dialogVisible" title="提示" width="90%">
           <el-form label-width="120px" :model="form" :rules="rules" ref="form">
             <el-form-item label="题号" prop="id">
               <el-input v-model="form.id" style="width: 85%;" maxlength="255" clearable></el-input>
@@ -14,12 +14,17 @@
             <el-form-item label="题目类型" prop="type">
               <el-input v-model="form.type" style="width: 85%;" maxlength="255" clearable></el-input>
             </el-form-item>
-            <el-form-item label="题目描述" prop="content">
-              <el-input v-model="form.content" style="width: 85%;" type="textarea" maxlength="1024"
-                        clearable></el-input>
+            <!--            <el-form-item label="题目描述" prop="content">-->
+            <!--              <el-input v-model="form.content" style="width: 85%;" type="textarea" maxlength="1024"-->
+            <!--                        clearable></el-input>-->
+            <!--            </el-form-item>-->
+            <el-form-item label="题目内容">
+              <div style="border: 1px solid #ccc; width: 85%;" id="we-div">
+
+              </div>
             </el-form-item>
             <el-form-item :label="String.fromCharCode(index + 65)" v-for="(item, index) in form.choices"
-                          :key="(item, index)" prop="choices">
+                          :key="(item)" prop="choices">
               <div style="display: grid;grid-template-columns: 85% 15%; width: 100%">
                 <el-input v-model="item.ccontent" property="value">
                   <template #prepend>
@@ -85,9 +90,11 @@
           </el-popconfirm>
         </template>
         <el-descriptions-item label="题目类型">{{ ex.type }}</el-descriptions-item>
-        <el-descriptions-item label="题目描述">{{ ex.content }}</el-descriptions-item>
+        <el-descriptions-item label="题目描述">
+          <div v-html=" ex.content "></div>
+        </el-descriptions-item>
         <el-descriptions-item label="选项">
-          <el-checkbox v-for="(item, index) in ex.choices" :key="(item, index)"
+          <el-checkbox v-for="(item, index) in ex.choices" :key="(item)"
                        :label="String.fromCharCode(index + 65)"
                        :checked="item.canswer===true"
           >{{ item.cid }}. {{ item.ccontent }}
@@ -116,12 +123,16 @@ import {
 } from 'element-plus'
 import {Delete, Edit, Plus, Minus} from "@element-plus/icons-vue";
 import request from "../utils/request";
+import {targetURL} from "../utils/request";
+import E from 'wangeditor'
+
+let editor = null;
 
 export default {
   name: "Exercises",
   components: {
     Edit, Delete, Plus, Minus, ElInput, ElPagination, ElButton, ElForm, ElFormItem, ElTooltip, ElRadio,
-    ElDescriptions, ElDescriptionsItem, ElEmpty, ElRadioGroup, ElPopconfirm, ElCheckbox, ElLoading, ElMessage
+    ElDescriptions, ElDescriptionsItem, ElEmpty, ElRadioGroup, ElPopconfirm, ElCheckbox, ElLoading, ElMessage,
   },
   data() {
     return {
@@ -141,20 +152,28 @@ export default {
         type: [
           {required: true, message: '请输入题目类型', trigger: 'blur'}
         ],
-        content: [
-          {required: true, message: '请输入题目描述', trigger: 'blur'}
-        ],
         choices: [
           {required: true, message: '请输入选项', trigger: 'blur'}
         ]
-      }
+      },
     };
   },
   created() {
     this.queryByPage();
   },
+  beforeUnmount() {
+    if (editor) {
+      editor.destroy()
+    }
+    editor = null
+  },
   methods: {
     handleSave() {
+      if (!/\d+/.test(this.form.id)) {
+        this.$message.error("题号只能为数字")
+        return;
+      }
+      this.form.content = editor.txt.html();
       this.form.choices.forEach((item, index) => {
         item.cid = String.fromCharCode(index + 65);
       });
@@ -211,10 +230,27 @@ export default {
         choices: [{ccontent: "", canswer: false}]
       }
       this.dialogVisible = true;
+      this.$nextTick(() => {
+        if (!editor) {
+          editor = new E("#we-div")
+          editor.config.uploadImgServer = targetURL + "/files/editor/upload"
+          editor.config.uploadFileName = "file"
+          editor.create()
+        }
+      })
     },
     editEx(ex) {
-      this.form = ex;
+      this.form = JSON.parse(JSON.stringify(ex));
       this.dialogVisible = true;
+      this.$nextTick(() => {
+        if (!editor) {
+          editor = new E("#we-div")
+          editor.config.uploadImgServer = targetURL + "/files/editor/upload"
+          editor.config.uploadFileName = "file"
+          editor.create()
+        }
+        editor.txt.html(ex.content)
+      })
     },
     deleteEx(ex) {
       this.loading = true;

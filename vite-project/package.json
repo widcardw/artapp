@@ -14,7 +14,8 @@
     "element-plus": "^2.1.7",
     "vue": "^3.2.25",
     "vue-router": "^4.0.14",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "wangeditor": "^4.7.12"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.0",

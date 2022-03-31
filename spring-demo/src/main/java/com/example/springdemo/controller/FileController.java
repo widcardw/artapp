@@ -4,7 +4,10 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import com.example.springdemo.common.Result;
+import org.bson.json.JsonObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,10 +36,30 @@ public class FileController {
         String rootFilePath = System.getProperty("user.dir") + "/spring-demo/src/main/resources/files/"
                 + flag + "_" + originalFileName;
         FileUtil.writeBytes(file.getBytes(), rootFilePath);
-        return Result.success(host + ":" + port + "/files/" + flag);  // 返回 url
+        String responseUrl = host + ":" + port + "/files/" + flag;
+        return Result.success(responseUrl);  // 返回 url
     }
 
-    @GetMapping("{flag}")
+    @PostMapping("/editor/upload")
+    public JSONObject editorUpload(@RequestPart("file") MultipartFile file) throws IOException {
+        String originalFileName = file.getOriginalFilename();
+        // 定义文件前缀 唯一标识符
+        String flag = IdUtil.fastSimpleUUID();
+        String rootFilePath = System.getProperty("user.dir") + "/spring-demo/src/main/resources/files/"
+                + flag + "_" + originalFileName;
+        FileUtil.writeBytes(file.getBytes(), rootFilePath);
+        String responseUrl = host + ":" + port + "/files/" + flag;
+        JSONObject res = new JSONObject();
+        res.set("errno", 0);
+        JSONObject data = new JSONObject();
+        data.set("url", responseUrl);
+        JSONArray array = new JSONArray();
+        array.add(data);
+        res.set("data", array);
+        return res;
+    }
+
+    @GetMapping("/{flag}")
     public void getFiles( @PathVariable String flag, HttpServletResponse response) {
         OutputStream os;  // 新建一个输出流
         String basePath = System.getProperty("user.dir") + "/spring-demo/src/main/resources/files/";  // 定义文件上传的根路径
