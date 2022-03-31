@@ -1,3 +1,0 @@
-window.server = {
-    apiUrl: "localhost"
-}

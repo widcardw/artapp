@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--    头部-->
-    <Header :nick-name="loginData.nickName"/>
+    <Header :nick-name="user.nickName"/>
     <!--    主体-->
     <div style="display: flex;">
       <!--      侧边栏-->
@@ -13,9 +13,8 @@
 </template>
 
 <script>
-import Header from "../components/Header";
-import AsideBar from "../components/AsideBar";
-import {mapState} from "vuex";
+import Header from "@/components/Header.vue";
+import AsideBar from "@/components/AsideBar.vue";
 
 export default {
   name: "Layout",
@@ -23,12 +22,13 @@ export default {
     Header,
     AsideBar
   },
-  computed: mapState(["loginData"]),
   data() {
-    return {}
+    return {
+      user: {}
+    }
   },
   created() {
-    console.log(this.loginData)
+    this.user = this.$store.getters.loginData
   }
 }
 </script>

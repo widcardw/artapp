@@ -5,13 +5,11 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
 
 export default {
   name: "Home",
-  computed: mapState(["loginData"]),
   created() {
-      console.log(this.loginData);
+      console.log(this.$store.getters.loginData);
   }
 }
 </script>

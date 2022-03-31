@@ -2,7 +2,7 @@
   <div>
     <div style="padding: 20px;">个人信息修改</div>
 <!--    当前角色为教师-->
-    <div v-if="adminSelection === 1">
+    <div v-if="$store.getters.adminSelection === 1">
       <el-form :model="form1" label-width="120px" style="width: 500px;" :rules="rules">
         <el-form-item label="教师用户名" prop="teacherName">
           <el-input v-model="form1.teacherName" maxlength="18"></el-input>
@@ -19,7 +19,7 @@
       </el-form>
     </div>
 <!--    当前角色为管理员-->
-    <div v-else-if="adminSelection === 2">
+    <div v-else-if="$store.getters.adminSelection === 2">
       <el-form :model="form2" label-width="120px" style="width: 500px;" :rules="rules">
         <el-form-item label="管理员" prop="adminName">
           <el-input v-model="form2.adminName" maxlength="18"></el-input>
@@ -40,7 +40,6 @@
 
 <script>
 import request from "../utils/request";
-import {mapState} from "vuex";
 import md5 from "crypto-js/md5";
 
 export default {
@@ -62,9 +61,8 @@ export default {
   },
   created() {
     this.getInfo();
-    // console.log(this.$store.getters.loginData)
+    // console.log(this.$store.getters.$store.getters.loginData)
   },
-  computed: mapState(["adminSelection", "loginData"]),
   methods: {
     // 管理员信息修改提交
     submitAdminData() {
@@ -104,10 +102,10 @@ export default {
     },
     // 获取角色信息
     getInfo() {
-      if (this.adminSelection === 1) {
+      if (this.$store.getters.adminSelection === 1) {
         // 是教师
         this.getTeacherInfo();
-      } else if (this.adminSelection === 2) {
+      } else if (this.$store.getters.adminSelection === 2) {
         // 是管理员
         this.getAdminInfo();
       }
@@ -115,7 +113,7 @@ export default {
     getTeacherInfo() {
       request.get("/teacher/info", {
         params: {
-          teacherName: this.loginData.teacherName
+          teacherName: this.$store.getters.loginData.teacherName
         }
       }).then(res => {
         console.log(res);
@@ -127,9 +125,10 @@ export default {
       });
     },
     getAdminInfo() {
+      console.log(this.$store.getters.loginData)
       request.get("/admin/info", {
         params: {
-          adminName: this.loginData.adminName
+          adminName: this.$store.getters.loginData.adminName
         }
       }).then(res => {
         console.log(res);

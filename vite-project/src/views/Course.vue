@@ -73,7 +73,7 @@ export default {
   components: {
     Search,
     Edit,
-    Delete
+    Delete,
   },
   data() {
     return {
