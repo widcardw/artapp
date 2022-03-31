@@ -74,7 +74,7 @@
     <div v-loading="loading">
       <el-empty description="没有数据" v-if="tableData.length===0"></el-empty>
       <el-descriptions v-for="ex in tableData" border :column="1"
-                       style="margin-bottom: 10px; border: 1px solid var(--el-border-color-base); padding: 10px;"
+                       style="margin-bottom: 10px; border: 1px solid lightgrey; padding: 10px;"
                        :title="'题号 ' + ex.id">
         <template #extra>
           <el-button @click="editEx(ex)">编辑</el-button>
@@ -110,13 +110,18 @@
 </template>
 
 <script>
+import {
+  ElInput, ElPagination, ElButton, ElForm, ElFormItem, ElTooltip, ElRadio, ElMessage,
+  ElDescriptions, ElDescriptionsItem, ElEmpty, ElRadioGroup, ElPopconfirm, ElCheckbox, ElLoading
+} from 'element-plus'
 import {Delete, Edit, Plus, Minus} from "@element-plus/icons-vue";
 import request from "../utils/request";
 
 export default {
   name: "Exercises",
   components: {
-    Edit, Delete, Plus, Minus
+    Edit, Delete, Plus, Minus, ElInput, ElPagination, ElButton, ElForm, ElFormItem, ElTooltip, ElRadio,
+    ElDescriptions, ElDescriptionsItem, ElEmpty, ElRadioGroup, ElPopconfirm, ElCheckbox, ElLoading, ElMessage
   },
   data() {
     return {

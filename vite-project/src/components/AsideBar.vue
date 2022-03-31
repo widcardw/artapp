@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <el-menu
         default-active="home"
         class="el-menu-vertical-demo"
@@ -34,11 +33,14 @@
 </template>
 
 <script>
+import {ElMenu, ElMenuItem, ElSubMenu} from 'element-plus'
 export default {
   name: "AsideBar",
+  components: {
+    ElMenu, ElMenuItem, ElSubMenu
+  },
   methods: {
     handleOpen() {
-
     },
     handleClose() {
     }

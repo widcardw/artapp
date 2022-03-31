@@ -26,7 +26,9 @@
       <div style="display: flex;">
         <el-input v-model="searchContent" clearable placeholder="输入关键字搜索" style="min-width: 300px;">
           <template #prefix>
-            <el-icon class="el-input__icon"><search /></el-icon>
+            <el-icon class="el-input__icon">
+              <search/>
+            </el-icon>
           </template>
         </el-input>
         <el-button type="primary" style="margin-left: 5px;" @click="handleLoad">查询</el-button>
@@ -65,15 +67,18 @@
 </template>
 
 <script>
+import {
+  ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElTable, ElTableColumn, ElPopconfirm, ElPagination,
+  ElLoading, ElMessage, ElIcon
+} from "element-plus";
 import {Delete, Edit, Search} from "@element-plus/icons-vue";
 import request from "../utils/request";
 
 export default {
   name: "Course",
   components: {
-    Search,
-    Edit,
-    Delete,
+    Search, Edit, Delete, ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElTable, ElTableColumn, ElPopconfirm,
+    ElPagination, ElLoading, ElMessage, ElIcon
   },
   data() {
     return {

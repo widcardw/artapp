@@ -30,9 +30,15 @@
 <script>
 import request from "../utils/request";
 import md5 from "crypto-js/md5";
+import {
+  ElForm, ElFormItem, ElInput, ElRadio, ElRadioGroup, ElRadioButton, ElButton
+} from "element-plus";
 
 export default {
   name: "Login",
+  components: {
+    ElForm, ElFormItem, ElInput, ElRadio, ElRadioGroup, ElRadioButton, ElButton
+  },
   created() {
     this.getWallPaper();
   },

@@ -41,9 +41,15 @@
 <script>
 import request from "../utils/request";
 import md5 from "crypto-js/md5";
+import {
+  ElForm, ElFormItem, ElInput, ElButton, ElMessage
+} from "element-plus";
 
 export default {
   name: "Information",
+  components: {
+    ElForm, ElFormItem, ElInput, ElButton, ElMessage
+  },
   data() {
     return {
       // 考虑将这两个 form 合并

@@ -105,11 +105,16 @@
 <script>
 import request from "../utils/request";
 import {ArrowDown, Delete, Edit} from '@element-plus/icons-vue'
+import {
+  ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElTable, ElTableColumn, ElPopconfirm, ElPagination, ElIcon,
+  ElRadio, ElRadioGroup, ElRadioButton, ElLoading
+} from 'element-plus'
 
 export default {
   name: "Score",
   components: {
-    ArrowDown, Edit, Delete
+    ArrowDown, Edit, Delete,ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElTable, ElTableColumn, ElPopconfirm,
+    ElPagination, ElIcon, ElRadio, ElRadioGroup, ElRadioButton,ElLoading
   },
   data() {
     return {

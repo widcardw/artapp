@@ -74,11 +74,16 @@
 import request from "../utils/request";
 import md5 from "crypto-js/md5";
 import {Delete, Edit, Search} from '@element-plus/icons-vue'
+import {
+  ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElTable, ElTableColumn, ElPopconfirm, ElPagination, ElIcon, ElLoading
+} from 'element-plus'
 
 export default {
   name: 'Teacher',
   components: {
-    Search, Edit, Delete
+    Search, Edit, Delete,  ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElTable, ElTableColumn, ElPopconfirm,
+    ElPagination, ElIcon, ElLoading
+
   },
   data() {
     return {

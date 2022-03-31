@@ -30,41 +30,43 @@
       <div style="display: flex;">
         <el-input v-model="searchContent" clearable placeholder="输入关键字搜索" style="min-width: 300px;">
           <template #prefix>
-            <el-icon class="el-input__icon"><search /></el-icon>
+            <el-icon class="el-input__icon">
+              <search/>
+            </el-icon>
           </template>
         </el-input>
         <el-button type="primary" style="margin-left: 5px;" @click="handleLoad">查询</el-button>
       </div>
     </div>
-      <el-table :data="tableData" border style="width: 99%" v-loading="loading">
-        <el-table-column prop="id" label="ID" sortable/>
-        <el-table-column prop="username" label="用户名" sortable/>
-        <el-table-column prop="nickName" label="昵称"/>
-        <el-table-column fixed="right" label="操作">
-          <template #default="scope">
-            <el-button plain size="small" @click="handleEdit(scope.row)">
-              <edit style="width: 20px; height: 20px"/>
-            </el-button>
-            <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row.id)">
-              <template #reference>
-                <el-button type="danger" size="small">
-                  <delete style="width: 20px; height: 20px"/>
-                </el-button>
-              </template>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-          v-model:currentPage="currentPage"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-      >
-      </el-pagination>
+    <el-table :data="tableData" border style="width: 99%" v-loading="loading">
+      <el-table-column prop="id" label="ID" sortable/>
+      <el-table-column prop="username" label="用户名" sortable/>
+      <el-table-column prop="nickName" label="昵称"/>
+      <el-table-column fixed="right" label="操作">
+        <template #default="scope">
+          <el-button plain size="small" @click="handleEdit(scope.row)">
+            <edit style="width: 20px; height: 20px"/>
+          </el-button>
+          <el-popconfirm title="确认删除这条数据吗" @confirm="handleDelete(scope.row.id)">
+            <template #reference>
+              <el-button type="danger" size="small">
+                <delete style="width: 20px; height: 20px"/>
+              </el-button>
+            </template>
+          </el-popconfirm>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+        v-model:currentPage="currentPage"
+        :page-sizes="[5, 10, 20, 50, 100]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -72,12 +74,16 @@
 
 import request from "../utils/request";
 import md5 from "crypto-js/md5"
+import {
+  ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElTable, ElTableColumn, ElPopconfirm, ElPagination, ElIcon, ElLoading
+} from 'element-plus'
 import {Search, Edit, Delete} from "@element-plus/icons-vue";
 
 export default {
   name: 'User',
   components: {
-    Search, Edit, Delete
+    Search, Edit, Delete, ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElTable, ElTableColumn, ElPopconfirm,
+    ElPagination, ElIcon, ElLoading
   },
   data() {
     return {

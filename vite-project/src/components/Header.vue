@@ -23,6 +23,7 @@
 
 <script>
 import {ArrowDown} from '@element-plus/icons-vue'
+import {ElDropdown, ElDropdownMenu, ElDropdownItem, ElIcon} from 'element-plus'
 
 export default {
   name: "Header",
@@ -30,7 +31,7 @@ export default {
     nickName: String
   },
   components: {
-    ArrowDown
+    ArrowDown,ElDropdown, ElDropdownMenu, ElDropdownItem, ElIcon
   },
   methods: {
     logout() {
