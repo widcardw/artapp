@@ -79,13 +79,13 @@ interface User {
 }
 ```
 
-|方式 | 接口                | 参数                                                             |功能|
-|------|-------------------|----------------------------------------------------------------|--------|
-|post| `/user`           | `{username: string, nickName?: string, password: md5(string)}` |新增用户|
-|post| `/user/login`     | `{username: string, password: string}`                         |登录| 
-|put| `/user`           | `{username: string, nickName?: string, password: md5(string)}` |更改用户信息|
-|get| `/user/page`      |`{pageNum?: int, pageSize?: int, search? string}`|分页查找|
-|delete| `/user/{id: int}` |None|删除用户|
+|方式 | 接口                | 参数                                                             | 功能       |
+|------|-------------------|----------------------------------------------------------------|----------|
+|post| `/user`           | `{username: string, nickName?: string, password: md5(string)}` | 新增用户     |
+|post| `/user/login`     | `{username: string, password: string}`                         | 登录(暂未部署) | 
+|put| `/user`           | `{username: string, nickName?: string, password: md5(string)}` | 更改用户信息   |
+|get| `/user/page`      |`{pageNum?: int, pageSize?: int, search? string}`| 分页查找     |
+|delete| `/user/{id: int}` |None| 删除用户     |
 
 ## Teacher
 
