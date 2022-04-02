@@ -1,5 +1,6 @@
 package com.example.springdemo.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springdemo.common.Result;
 import com.example.springdemo.entity.User;
@@ -44,6 +45,15 @@ public class UserController {
         return Result.success(i);
     }
 
+    @PostMapping("/login")
+    public Result<?> login(@RequestBody User user) {
+        User one = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()).eq(User::getPassword, user.getPassword()));
+        if (one == null) {
+            return Result.error("-1", "用户名或密码错误");
+        }
+        return Result.success(one);
+    }
+
     @PutMapping
     public Result<?> update(@RequestBody User user) {
         // 判断发送过来的密码是否为空
@@ -66,7 +76,7 @@ public class UserController {
         return Result.success(i);
     }
 
-    @GetMapping
+    @GetMapping("/page")
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search) {

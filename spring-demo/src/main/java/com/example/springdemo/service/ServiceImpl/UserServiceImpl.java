@@ -3,6 +3,7 @@ package com.example.springdemo.service.ServiceImpl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.springdemo.entity.User;
 import com.example.springdemo.mapper.UserMapper;
 import com.example.springdemo.service.UserService;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 @Service("UserService")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Autowired
     UserMapper userMapper;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> findUsersByPage(int pageNum, int pageSize, String search) {
-        LambdaQueryWrapper<User> queryWrapper = Wrappers.<User>lambdaQuery();
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         if (StrUtil.isNotBlank(search)) {
             queryWrapper.like(User::getUsername, search);
         }
